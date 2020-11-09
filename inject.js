@@ -5,6 +5,7 @@ function findHighestZIndex(){
   for (let i = 0; i < elems.length; i++){
     let zindex = document.defaultView.getComputedStyle(elems[i],null).getPropertyValue("z-index")
     let obj = elems[i]
+    if (obj.style.display === 'hidden') obj.style.display = 'block'
     if ((zindex > highest) && (zindex != 'auto')){
       highest = zindex
       ret = obj
@@ -60,6 +61,8 @@ function fixNYTimesCom(){
   if (window.origin.includes('nytimes.com')){
     fixNYTimesCom()
   }
+  document.body.style.overflowY = 'scroll'
+  document.body.style.overflow = 'scroll'
 
 
 
