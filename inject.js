@@ -1,33 +1,69 @@
-// adapted with pride from http://stackoverflow.com/questions/1118198/how-can-you-figure-out-the-highest-z-index-in-your-document
-// thanks a lot to http://stackoverflow.com/users/136852/flo
-function findHighestZIndex(elem)
-{
-  var elems = document.getElementsByTagName(elem);
-  var highest = 0;
-  var ret;
-  for (var i = 0; i < elems.length; i++)
-  {
-    var zindex=document.defaultView.getComputedStyle(elems[i],null).getPropertyValue("z-index");
-    var obj = elems[i]
-    if ((zindex > highest) && (zindex != 'auto'))
-    {
-      highest = zindex;
+function findHighestZIndex(){
+  let elems = document.getElementsByTagName('div')
+  let highest = 0
+  let ret
+  for (let i = 0; i < elems.length; i++){
+    let zindex = document.defaultView.getComputedStyle(elems[i],null).getPropertyValue("z-index")
+    let obj = elems[i]
+    if ((zindex > highest) && (zindex != 'auto')){
+      highest = zindex
       ret = obj
-    }
+    } 
   }
-  return ret;
+  return ret
 }
 
+function fixWeatherCom(){
+  let elems = document.getElementsByTagName('div')
+  for (let i = 0; i < elems.length; i++){
+    if (elems[i].className.includes('sp_')){
+      console.log('class is: ', elems[i].className)
+      elems[i].remove()
+    }
+    if (elems[i].id.includes('sp_')){
+      console.log('id is: ', elems[i].id)
+      elems[i].remove()
+    }
+  }
+  document.body.style.overflowY = 'scroll'
+}
 
-(function() {
+function fixNYTimesCom(){
+  let elems = document.getElementsByTagName('div')
+  for (let i = 0; i < elems.length; i++){
+    if (elems[i].id.includes('gateway-content') || elems[i].id.includes('wrapper') || elems[i].className.includes('css-1bd8bfl')){
+      elems[i].remove()
+    }
+    if (elems[i].id.includes('gateway-content')){
+      elems[i].remove()
+    }
+    if (elems[i].style.background.includes('gradient')){
+      elems[i].style.background = 'none'
+    }
+    if (elems[i].style.overflow === 'hidden'){
+      elems[i].style.overflow = 'scroll'
+    }
+    if (elems[i].className === 'css-mcm29f'){
+      elems[i].style.overflow = 'scroll'
+    }
+  }
+}
 
-	var bla = findHighestZIndex('div');
-	bla.remove();
-	console.log(bla)
+(()=>{
+
+	let bla = findHighestZIndex()
+	bla.remove()
+  console.log(bla)
+  if (window.origin.includes('weather.com')){
+    fixWeatherCom()
+  }
+  if (window.origin.includes('nytimes.com')){
+    fixNYTimesCom()
+  }
 
 
 
-})();
+})()
 
 
 
