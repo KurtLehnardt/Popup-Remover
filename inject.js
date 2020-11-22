@@ -15,6 +15,16 @@ function findHighestZIndex(){
   return ret
 }
 
+function fixImgurCom(){
+  let ads= [...document.getElementsByClassName('Ad   up-show')]
+  console.log('ads', ads)
+  ads.map(ad => ad.style.display = 'none')
+  let adsFooter = [...document.getElementsByClassName('Footer-wrapper')]
+  console.log('adsFooter', adsFooter)
+  adsFooter.map(footer => footer.style.display = 'none')
+
+}
+
 function fixWeatherCom(){
   let elems = document.getElementsByTagName('div')
   for (let i = 0; i < elems.length; i++){
@@ -52,16 +62,24 @@ function fixNYTimesCom(){
 }
 
 (()=>{
+  switch (window.origin){
+    case 'https://weather.com': 
+      fixWeatherCom()
+      break
+    case 'https://www.nytimes.com': 
+      fixWeatherCom()
+      break
+    case 'https://imgur.com': 
+      fixImgurCom()
+      break
+    default: 
+      let bla = findHighestZIndex()
+      bla.remove()
+      console.log(bla)
+  }
 
-	let bla = findHighestZIndex()
-	bla.remove()
-  console.log(bla)
-  if (window.origin.includes('weather.com')){
-    fixWeatherCom()
-  }
-  if (window.origin.includes('nytimes.com')){
-    fixNYTimesCom()
-  }
+
+
   document.body.style.overflowY = 'scroll'
   document.body.style.overflow = 'scroll'
   const html = document.getElementsByTagName('html')[0]
