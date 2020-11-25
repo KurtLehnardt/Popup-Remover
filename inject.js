@@ -17,10 +17,8 @@ function findHighestZIndex(){
 
 function fixImgurCom(){
   let ads= [...document.getElementsByClassName('Ad   up-show')]
-  console.log('ads', ads)
   ads.map(ad => ad.style.display = 'none')
   let adsFooter = [...document.getElementsByClassName('Footer-wrapper')]
-  console.log('adsFooter', adsFooter)
   adsFooter.map(footer => footer.style.display = 'none')
 
 }
@@ -61,9 +59,25 @@ function fixNYTimesCom(){
   }
 }
 
+function fixStandardNet(){
+  console.log('fixing standard')
+  let popup = document.getElementById('subscription-modal')
+  popup.style.display = 'none'
+  let backdrop = document.getElementsByClassName('modal-backdrop')
+  backdrop[0].style.display = 'none'
+  let overlay = document.getElementsByClassName('redacted-overlay')
+  overlay[0].style.display = 'none'
+  let subscription = document.getElementsByClassName('subscription-required')
+  subscription[0].style.display = 'none'
+  let hiddenParagraphs = [...document.getElementsByClassName('hide')]
+  hiddenParagraphs.map(item => item.classList.remove('hide')) 
+  let hiddenScroll = document.getElementsByClassName('modal-open')
+  hiddenScroll[0].style.overflow = 'auto'
+}
+
 (()=>{
   switch (window.origin){
-    case 'https://weather.com': 
+    case 'https://weather.com':
       fixWeatherCom()
       break
     case 'https://www.nytimes.com': 
@@ -72,6 +86,9 @@ function fixNYTimesCom(){
     case 'https://imgur.com': 
       fixImgurCom()
       break
+    case 'https://www.standard.net':
+      console.log('fixing standard') 
+      fixStandardNet()
     default: 
       let bla = findHighestZIndex()
       bla.remove()
