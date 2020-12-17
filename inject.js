@@ -18,8 +18,9 @@ function findHighestZIndex(){
 function fixImgurCom(){
   removeImgurSelfAds()
   removeImgurSponsoredAds()
-  removeImgurElementByClass('Accolade-background')
-  removeImgurElementByClass('NewPostsNotification')
+  removeImgurElementByClass('div', 'Accolade-background')
+  removeImgurElementByClass('div', 'NewPostsNotification')
+  removeImgurElementByClass('a', 'EmeraldBanner')
 
 }
 
@@ -45,8 +46,8 @@ function removeImgurSponsoredAds(){
   })
 }
 
-function removeImgurElementByClass(targetClass){
-  let galleryImages = [...document.getElementsByTagName('div')]
+function removeImgurElementByClass(tag, targetClass){
+  let galleryImages = [...document.getElementsByTagName(tag)]
   galleryImages.map(image => {
     if (image.classList.contains(targetClass)){
       image.remove()
