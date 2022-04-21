@@ -110,13 +110,15 @@ function fixStandardNet(){
 
 function fixMediumCom(){
   let currentPage = window.location.href
-  window.location.href = 'https://medium.com'
-  localStorage.clear()
-  sessionStorage.clear()
+  session_id = Array(19).fill().map(()=>"0123456789".charAt(Math.random() * 10)).join("")
+  localStorage.setItem('post-article|posts-viewed-today-count', 1)
+  localStorage.setItem('pv|114d0dffa9d4', Date.now())
+  localStorage.setItem('post-article|posts-viewed-count', 1)
+  localStorage.setItem('post-article|posts-viewed-month-count', 1)
+  localStorage.setItem('post-article|first-post-viewed-timestamp', Date.now())
+  localStorage.setItem('branch_session_first', `{'browser_fingerprint_id': ${Array(26).fill().map(()=>"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".charAt(Math.random()*62)).join("")}==','data': "{\"+clicked_branch_link\":false,\"+is_first_session\":true}",'has_app': false,'identity': "lo_"${Array(12).fill().map(()=>"abcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.random()*62)).join("")},'identity_id': ${session_id},'link': https://link.medium.com/a/key_live_${Array(32).fill().map(()=>"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".charAt(Math.random()*62)).join("")}?%24identity_id=${session_id},'session_id': ${session_id}}`)
   clearCookies()
   console.log('cookies', document.cookie.split("; "))
-  localStorage.clear()
-  sessionStorage.clear()
   window.location.reload(true)
   window.location.href = currentPage
 }
@@ -152,20 +154,19 @@ function clearCookies(){
     case 'https://www.standard.net':
       console.log('fixing standard') 
       fixStandardNet()
-    case 'https://medium.com':
-    case 'http://medium.com':
-    case 'medium.com':
-      fixMediumCom()
       break
     default: 
+      if (document.body.innerHTML.includes('medium.com')){
+        fixMediumCom()
+        break
+      }
       let bla = findHighestZIndex()
       bla.remove()
-      console.log(bla)
   }
 
   window.onscroll = function(e) {
     let scrollUp = this.oldScroll > this.scrollY
-    if (scrollUp) fixImgurCom(scrollingUp)
+    if (scrollUp) fixImgurCom()
     this.oldScroll = this.scrollY;
     if (!scrollUp) {
       removeImgurElementByClass('Accolade-background')
