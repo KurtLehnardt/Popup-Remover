@@ -111,13 +111,13 @@ function fixStandardNet(){
 function fixMediumCom(){
   let currentPage = window.location.href
   let session_id = Array(19).fill().map(()=>"0123456789".charAt(Math.random() * 10)).join("")
-  localStorage.setItem('post-article|posts-viewed-today-count', 1)
+  localStorage.setItem('post-article|posts-viewed-today-count', 0)
   let pvObject = Object.keys(localStorage).map(key => key.includes('pv|'))
   let pvIndex = pvObject.indexOf(true)
   let pvValue = Object.entries(localStorage)[pvIndex][0]
   localStorage.setItem(pvValue, Date.now())
-  localStorage.setItem('post-article|posts-viewed-count', 1)
-  localStorage.setItem('post-article|posts-viewed-month-count', 1)
+  localStorage.setItem('post-article|posts-viewed-count', 0)
+  localStorage.setItem('post-article|posts-viewed-month-count', 0)
   localStorage.setItem('post-article|first-post-viewed-timestamp', Date.now())
   localStorage.setItem('branch_session_first', `{'browser_fingerprint_id': ${Array(26).fill().map(()=>"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".charAt(Math.random()*62)).join("")}==','data': "{\"+clicked_branch_link\":false,\"+is_first_session\":true}",'has_app': false,'identity': "lo_"${Array(12).fill().map(()=>"abcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.random()*62)).join("")},'identity_id': ${session_id},'link': https://link.medium.com/a/key_live_${Array(32).fill().map(()=>"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".charAt(Math.random()*62)).join("")}?%24identity_id=${session_id},'session_id': ${session_id}}`)
   clearCookies()
