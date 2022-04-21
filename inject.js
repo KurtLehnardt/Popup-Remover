@@ -110,9 +110,12 @@ function fixStandardNet(){
 
 function fixMediumCom(){
   let currentPage = window.location.href
-  session_id = Array(19).fill().map(()=>"0123456789".charAt(Math.random() * 10)).join("")
+  let session_id = Array(19).fill().map(()=>"0123456789".charAt(Math.random() * 10)).join("")
   localStorage.setItem('post-article|posts-viewed-today-count', 1)
-  localStorage.setItem('pv|114d0dffa9d4', Date.now())
+  let pvObject = Object.keys(localStorage).map(key => key.includes('pv|'))
+  let pvIndex = pvObject.indexOf(true)
+  let pvValue = Object.entries(localStorage)[pvIndex][0]
+  localStorage.setItem(pvValue, Date.now())
   localStorage.setItem('post-article|posts-viewed-count', 1)
   localStorage.setItem('post-article|posts-viewed-month-count', 1)
   localStorage.setItem('post-article|first-post-viewed-timestamp', Date.now())
@@ -124,6 +127,10 @@ function fixMediumCom(){
 }
 
 function clearCookies(){
+  // TODO this function doesn't cookie values that have the http only flag enabled :(
+  // look into ways to force it, possibly overwrite the existing cookie entirely. 
+  // This is the last piece of making medium work when you're over the 3 free article limit
+  // Manually clearing their cookie and executing the rest of fixMedium() works.
   var cookies = document.cookie.split("; ");
   for (var c = 0; c < cookies.length; c++) {
       var d = window.location.hostname.split(".");
