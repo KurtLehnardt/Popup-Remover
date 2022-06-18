@@ -7,6 +7,7 @@ function findHighestZIndex(){
     let obj = elems[i]
     if (obj.style.display === 'hidden') obj.style.display = 'block !important'
     if (obj.style.overflowY !== 'scroll') obj.style.overflowY = 'scroll !important'
+    if (obj.style.overflow !== 'scroll') obj.style.overflow = 'scroll !important'
     if ((zindex > highest) && (zindex != 'auto')){
       highest = zindex
       ret = obj
