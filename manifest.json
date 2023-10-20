@@ -22,12 +22,6 @@
       "48": "icons/icon48.png"
     }
   },
-  "content_scripts": [
-    {
-      "matches": ["https://*.imgur.com/*", "http://*.imgur.com/*"],
-      "js": ["background.js"]
-    }
-  ],
   "permissions": [
     "activeTab"
   ]
