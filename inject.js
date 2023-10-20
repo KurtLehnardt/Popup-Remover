@@ -16,6 +16,11 @@ function findHighestZIndex(){
   return ret
 }
 
+function fixYoutubeAdBlockerModal(){
+  let modal = [...document.getElementsByTagName('ytd-popup-container')][0]
+  modal.remove()
+}
+
 function fixImgurCom(){
   removeImgurSelfAds()
   removeImgurSponsoredAds()
@@ -150,6 +155,9 @@ function clearCookies(){
 
 (()=>{
   switch (window.origin){
+    case 'https://www.youtube.com':
+      fixYoutubeAdBlockerModal()
+      break
     case 'https://weather.com':
       fixWeatherCom()
       break
