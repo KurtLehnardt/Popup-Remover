@@ -1,9 +1,9 @@
 
 {
-  "name": "Fix It",
+  "name": "Remove YouTube Ad Pop Up",
   "version": "0.0.1",
   "manifest_version": 2,
-  "description": "Removes annoying, screen-blocking modals that force users to sign up, disable ad-block or join a newsletter.",
+  "description": "Removes YouTube's new Ad Blocker pop up. Also removes annoying, screen-blocking modals and overlays that force users to sign up, disable ad-block or join a newsletter.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -16,7 +16,11 @@
     "persistent": true
   },
   "browser_action": {
-    "default_title": "Remove Modal"
+    "default_title": "Remove Pop Ups",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png"
+    }
   },
   "content_scripts": [
     {
@@ -25,11 +29,6 @@
     }
   ],
   "permissions": [
-    "https://*/*",
-    "http://*/*",
-    "tabs",
-    "activeTab",
-    "cookies",
-    "storage"
+    "activeTab"
   ]
 }
