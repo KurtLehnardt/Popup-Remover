@@ -13,6 +13,6 @@
 - click 'load unpacked'
 - select the unzipped Modal-Remover folder
 - click the chrome puzzle piece icon to the right of your address bar
-- find 'Fix It' and pin it to your extension bar
-- navigate to a site
-- if a popup displays, click Fix It extension button (x)
+- find 'Remove Pop Ups' and pin it to your extension bar
+- navigate to YouTube, or other sites.
+- if a popup displays, click the 'Remove Pop Ups' extension button (x) to delete the obstruction
