@@ -16,6 +16,36 @@ function findHighestZIndex(){
   return ret
 }
 
+// Collects every element in the document, descending into open shadow roots
+// (YouTube's ytd-* components keep most of their markup there).
+function collectElements(root){
+  let found = []
+  for (let el of root.querySelectorAll('*')){
+    found.push(el)
+    if (el.shadowRoot) found = found.concat(collectElements(el.shadowRoot))
+  }
+  return found
+}
+
+// Rewrites every computed 'overflow: hidden' to 'auto'. Reads the *computed*
+// value so rules from stylesheets are caught, not just inline styles, and
+// writes with setProperty(..., 'important') because the .style setter silently
+// drops any value containing '!important'.
+function unlockOverflow(){
+  const props = ['overflow', 'overflow-x', 'overflow-y']
+  let changed = 0
+  for (let el of collectElements(document)){
+    const computed = getComputedStyle(el)
+    for (let prop of props){
+      if (computed.getPropertyValue(prop) === 'hidden'){
+        el.style.setProperty(prop, 'auto', 'important')
+        changed++
+      }
+    }
+  }
+  return changed
+}
+
 function fixYoutubeAdBlockerModal(){
   let modal = [...document.getElementsByTagName('ytd-popup-container')][0]
   modal.remove()
@@ -154,30 +184,36 @@ function clearCookies(){
 }
 
 (()=>{
-  switch (window.origin){
-    case 'https://www.youtube.com':
-      fixYoutubeAdBlockerModal()
-      break
-    case 'https://weather.com':
-      fixWeatherCom()
-      break
-    case 'https://www.nytimes.com': 
-      fixWeatherCom()
-      break
-    case 'https://imgur.com': 
-      fixImgurCom()
-      break
-    case 'https://www.standard.net':
-      console.log('fixing standard') 
-      fixStandardNet()
-      break
-    default: 
-      if (document.body.innerHTML.includes('medium.com')){
-        fixMediumCom()
+  // Site fixes are best-effort. If one throws (modal not present, element
+  // missing) the overflow unlock below still needs to run, so swallow it.
+  try {
+    switch (window.origin){
+      case 'https://www.youtube.com':
+        fixYoutubeAdBlockerModal()
         break
-      }
-      let bla = findHighestZIndex()
-      bla.remove()
+      case 'https://weather.com':
+        fixWeatherCom()
+        break
+      case 'https://www.nytimes.com':
+        fixWeatherCom()
+        break
+      case 'https://imgur.com':
+        fixImgurCom()
+        break
+      case 'https://www.standard.net':
+        console.log('fixing standard')
+        fixStandardNet()
+        break
+      default:
+        if (document.body.innerHTML.includes('medium.com')){
+          fixMediumCom()
+          break
+        }
+        let bla = findHighestZIndex()
+        if (bla) bla.remove()
+    }
+  } catch (err) {
+    console.log('Pop Up Remover: site fix failed, unlocking scroll anyway', err)
   }
 
   window.onscroll = function(e) {
@@ -185,8 +221,8 @@ function clearCookies(){
     if (scrollUp) fixImgurCom()
     this.oldScroll = this.scrollY;
     if (!scrollUp) {
-      removeImgurElementByClass('Accolade-background')
-      removeImgurElementByClass('NewPostsNotification')
+      removeImgurElementByClass('div', 'Accolade-background')
+      removeImgurElementByClass('div', 'NewPostsNotification')
     }
   }
 
@@ -196,9 +232,6 @@ function clearCookies(){
     }
   }
 
-  document.body.style.overflowY = 'scroll !important'
-  document.body.style.overflow = 'scroll !important'
-  const html = document.getElementsByTagName('html')[0]
-  html.style.overflow = 'auto !important'
-  
+  const unlocked = unlockOverflow()
+  console.log(`Pop Up Remover: set overflow to auto on ${unlocked} declaration(s)`)
 })()
