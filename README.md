@@ -7,6 +7,7 @@
 #### Please suggest any other sites you'd like to be fixed. 
 
 # Download
+_Built on Manifest V3 — works with current Chrome (v88+) and other Chromium browsers._
 - Download the project as a .zip
 - extract the contents
 - open `chrome://extensions/`
