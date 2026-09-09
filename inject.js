@@ -5,15 +5,23 @@ function findHighestZIndex(){
   for (let i = 0; i < elems.length; i++){
     let zindex = document.defaultView.getComputedStyle(elems[i],null).getPropertyValue("z-index")
     let obj = elems[i]
-    if (obj.style.display === 'hidden') obj.style.display = 'block !important'
-    if (obj.style.overflowY !== 'scroll') obj.style.overflowY = 'scroll !important'
-    if (obj.style.overflow !== 'scroll') obj.style.overflow = 'scroll !important'
     if ((zindex > highest) && (zindex != 'auto')){
       highest = zindex
       ret = obj
     } 
   }
   return ret
+}
+
+// The .style setter silently discards any value containing '!important', so
+// every forced style has to go through setProperty(prop, value, 'important').
+function hideAll(selector){
+  let hidden = 0
+  for (let el of document.querySelectorAll(selector)){
+    el.style.setProperty('display', 'none', 'important')
+    hidden++
+  }
+  return hidden
 }
 
 // Collects every element in the document, descending into open shadow roots
@@ -61,10 +69,8 @@ function fixImgurCom(){
 }
 
 function removeImgurSelfAds(){
-  let ads= [...document.getElementsByClassName('Ad   up-show')]
-  ads.map(ad => ad.style.display = 'none !important')
-  let adsFooter = [...document.getElementsByClassName('Footer-wrapper')]
-  adsFooter.map(footer => footer.style.display = 'none !important')
+  hideAll('.Ad.up-show')
+  hideAll('.Footer-wrapper')
 }
 
 function removeImgurSponsoredAds(){
@@ -93,55 +99,29 @@ function removeImgurElementByClass(tag, targetClass){
 
 
 function fixWeatherCom(){
-  let elems = document.getElementsByTagName('div')
-  for (let i = 0; i < elems.length; i++){
-    if (elems[i].className.includes('sp_')){
-      console.log('class is: ', elems[i].className)
-      elems[i].remove()
-    }
-    if (elems[i].id.includes('sp_')){
-      console.log('id is: ', elems[i].id)
-      elems[i].remove()
-    }
+  for (let el of document.querySelectorAll('div')){
+    if (el.className.includes('sp_') || el.id.includes('sp_')) el.remove()
   }
-  document.body.style.overflowY = 'scroll !important'
 }
 
 function fixNYTimesCom(){
-  let elems = document.getElementsByTagName('div')
-  for (let i = 0; i < elems.length; i++){
-    if (elems[i].id.includes('gateway-content') || elems[i].id.includes('wrapper') || elems[i].className.includes('css-1bd8bfl')){
-      elems[i].remove()
+  for (let el of document.querySelectorAll('div')){
+    if (el.id.includes('gateway-content') || el.id.includes('wrapper') || el.className.includes('css-1bd8bfl')){
+      el.remove()
+      continue
     }
-    if (elems[i].id.includes('gateway-content')){
-      elems[i].remove()
-    }
-    if (elems[i].style.background.includes('gradient')){
-      elems[i].style.background = 'none !important'
-    }
-    if (elems[i].style.overflow === 'hidden'){
-      elems[i].style.overflow = 'scroll !important'
-    }
-    if (elems[i].className === 'css-mcm29f'){
-      elems[i].style.overflow = 'scroll !important'
+    if (el.style.background.includes('gradient')){
+      el.style.setProperty('background', 'none', 'important')
     }
   }
 }
 
 function fixStandardNet(){
-  console.log('fixing standard')
-  let popup = document.getElementById('subscription-modal')
-  popup.style.display = 'none !important'
-  let backdrop = document.getElementsByClassName('modal-backdrop')
-  backdrop[0].style.display = 'none !important'
-  let overlay = document.getElementsByClassName('redacted-overlay')
-  overlay[0].style.display = 'none !important'
-  let subscription = document.getElementsByClassName('subscription-required')
-  subscription[0].style.display = 'none !important'
-  let hiddenParagraphs = [...document.getElementsByClassName('hide')]
-  hiddenParagraphs.map(item => item.classList.remove('hide')) 
-  let hiddenScroll = document.getElementsByClassName('modal-open')
-  hiddenScroll[0].style.overflow = 'auto !important'
+  hideAll('#subscription-modal')
+  hideAll('.modal-backdrop')
+  hideAll('.redacted-overlay')
+  hideAll('.subscription-required')
+  for (let el of document.querySelectorAll('.hide')) el.classList.remove('hide')
 }
 
 function fixMediumCom(){
@@ -195,13 +175,12 @@ function clearCookies(){
         fixWeatherCom()
         break
       case 'https://www.nytimes.com':
-        fixWeatherCom()
+        fixNYTimesCom()
         break
       case 'https://imgur.com':
         fixImgurCom()
         break
       case 'https://www.standard.net':
-        console.log('fixing standard')
         fixStandardNet()
         break
       default:
